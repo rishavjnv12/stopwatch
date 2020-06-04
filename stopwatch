@@ -1,0 +1,87 @@
+#!/usr/bin/python3
+
+from tkinter import *
+import tkinter.font as tkfont
+from datetime import datetime
+
+root=Tk()
+root.title("Stopwatch")
+
+root.minsize(width=250,height=70)
+
+fontStyle=tkfont.Font(family='Lucida Grande',size=20)
+display=Label(root,height=10,width=20,text="WELCOME!",fg='grey',font=fontStyle)
+display.grid(row=0,column=0,columnspan=3)
+
+ticking=False
+counter=66600
+
+def counter_label(label):  
+    def count():  
+        if ticking:  
+            global counter  
+    
+            # To manage the intial delay.  
+            if counter==66600:              
+                display="Starting..."
+            else: 
+                tt = datetime.fromtimestamp(counter) 
+                string = tt.strftime("%H:%M:%S") 
+                display=string  
+    
+            label['text']=display   # Or label.config(text=display)  
+
+
+
+            label.after(1000, lambda:count())   
+            counter += 1
+    
+    # Triggering the start of the counter.  
+    count()  
+    
+    
+    
+
+
+def press_start(display):
+    global ticking
+    ticking=True
+    counter_label(display)
+    button_start['state']='disabled'
+    button_stop['state']='normal'
+    button_reset['state']='normal'
+    
+def press_stop():  
+    global ticking  
+    button_start['state']='normal'
+    button_stop['state']='disabled'
+    button_reset['state']='normal'
+    ticking = False
+
+def press_reset(label):  
+    global counter  
+    counter=66600
+    
+    if ticking==False:        
+        button_reset['state']='disabled'
+        label['text']='Welcome!'
+    
+    else:                 
+        label['text']='Starting...'
+
+
+button_start=Button(root,text='START',height=1,width=7,
+	command=lambda:press_start(display))
+button_stop=Button(root,text='STOP',height=1,width=7,
+	command=lambda:press_stop())
+button_reset=Button(root,text='RESET',height=1,width=7,
+	command=lambda:press_reset(display))
+
+
+
+button_start.grid(row=1,column=0)
+button_stop.grid(row=1,column=1)
+button_reset.grid(row=1,column=2)
+
+
+root.mainloop()
